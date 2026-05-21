@@ -1,0 +1,84 @@
+<div class="news-container">
+  <div class="news-header">
+    <h2>Hacker News Top Stories</h2>
+    <div class="controls">
+      <label for="storyCount">Show stories:</label>
+      <select id="storyCount" [(ngModel)]="selectedCount" (change)="onCountChange(selectedCount)">
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="20">20</option>
+        <option value="30">30</option>
+        <option value="50">50</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Search Section -->
+  <div class="search-section" *ngIf="!loading && stories.length > 0">
+    <div class="search-box">
+      <input
+        type="text"
+        [(ngModel)]="searchQuery"
+        (keyup)="onSearch()"
+        placeholder="Search stories..."
+        class="search-input"
+      />
+      <button *ngIf="searchQuery" (click)="clearSearch()" class="clear-btn">×</button>
+    </div>
+
+    <div class="search-filters">
+      <label>Search by:</label>
+      <div class="filter-buttons">
+        <button
+          *ngFor="let type of ['all', 'id', 'by', 'title', 'date']"
+          [class.active]="searchType === type"
+          (click)="searchType = type; onSearch()"
+          class="filter-btn"
+        >
+          {{ type | titlecase }}
+        </button>
+      </div>
+    </div>
+
+    <div class="search-results" *ngIf="searchQuery">
+      Found {{ getResultCount() }} of {{ stories.length }} stories
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading">
+    Loading stories...
+  </div>
+
+  <div *ngIf="error" class="error">
+    {{ error }}
+  </div>
+
+  <div *ngIf="!loading && filteredStories.length > 0" class="stories-list">
+    <div *ngFor="let story of filteredStories; let i = index" class="story-card">
+      <div class="story-rank">{{ i + 1 }}</div>
+      <div class="story-content">
+        <h3>
+          <a *ngIf="story.url" (click)="openStory(story.url)" class="story-title">
+            {{ story.title }}
+          </a>
+          <span *ngIf="!story.url" class="story-title">{{ story.title }}</span>
+        </h3>
+        <p class="story-meta">
+          <span class="id" title="Story ID">ID: {{ story.id }}</span>
+          <span class="score">{{ story.score }} points</span>
+          <span class="by"> by {{ story.by }}</span>
+          <span class="time"> • {{ formatTime(story.time) }}</span>
+          <span *ngIf="story.descendants" class="comments"> • {{ story.descendants }} comments</span>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && filteredStories.length === 0 && searchQuery && !error" class="no-stories">
+    No stories match your search.
+  </div>
+
+  <div *ngIf="!loading && stories.length === 0 && !error" class="no-stories">
+    No stories available.
+  </div>
+</div>

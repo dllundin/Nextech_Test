@@ -1,0 +1,14 @@
+{
+  "/WeatherForecast": {
+    "target": "http://localhost:5234",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+  "/api": {
+    "target": "http://localhost:5234",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
+}
